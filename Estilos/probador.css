@@ -1,0 +1,26 @@
+.probador {
+    padding: 40px;
+    background: #f9f9f9;
+    text-align: center;
+    margin-top: 50px;
+    border-radius: 12px;
+}
+
+.probador form {
+    margin: 20px auto;
+    display: inline-block;
+    text-align: left;
+}
+
+.probador form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+}
+
+.probador select, 
+.probador button {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+}

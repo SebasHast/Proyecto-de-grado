@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clothes</title>
+
+  <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./fonts/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="./Estilos/style.css">
+</head>
+
+<body>
+  <div id="header"></div>
+
+  <main>
+    <section class="intro-colombia text-center py-4">
+      <h1>Explora todo lo que Colombia tiene para ti</h1>
+    </section>
+
+    <section class="productos container pb-5">
+      <div class="row g-4">
+        <div class="col-12 col-md-4">
+          <article class="producto hoodies d-flex justify-content-center align-items-center"
+            onclick="window.location.href='/Contenido/hoodies.html'">
+            <h2>Hoodies</h2>
+          </article>
+
+        </div>
+        <div class="col-12 col-md-4">
+          <article class="producto basicos d-flex justify-content-center align-items-center">
+            <h2>Básicos</h2>
+          </article>
+        </div>
+        <div class="col-12 col-md-4">
+          <article class="producto pantalones d-flex justify-content-center align-items-center">
+            <h2>Pantalones</h2>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    fetch('./header.html')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('header').innerHTML = html;
+        const root = document.documentElement;
+
+        function getStoredTheme() {
+          return localStorage.getItem('theme') ||
+            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        }
+
+        function setTheme(theme) {
+          root.setAttribute('data-theme', theme);
+          localStorage.setItem('theme', theme);
+          document.querySelectorAll('[data-action="toggle-theme"] i').forEach(icon => {
+            icon.classList.toggle('fa-moon', theme !== 'dark');
+            icon.classList.toggle('fa-sun', theme === 'dark');
+          });
+        }
+
+        function wireButtons() {
+          document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const next = (localStorage.getItem('theme') || getStoredTheme()) === 'dark' ? 'light' : 'dark';
+              setTheme(next);
+            });
+          });
+        }
+
+        setTheme(getStoredTheme());
+        wireButtons();
+      });
+  </script>
+</body>
+
+</html>

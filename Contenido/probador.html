@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Probador Virtual</title>
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../Estilos/style.css">
+    <link rel="stylesheet" href="../Estilos/categorias.css">
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <main class="container py-4">
+        <h1 class="mb-3">Probador Virtual</h1>
+        <p class="mb-4">Bienvenido al probador virtual. Encuentra tu outfit perfecto.</p>
+
+        <form class="row g-3">
+            <div class="col-12 col-md-6">
+                <label for="cuerpo" class="form-label">Tipo de cuerpo</label>
+                <select id="cuerpo" class="form-select">
+                    <option value="delgado">Delgado</option>
+                    <option value="atlético">Atlético</option>
+                    <option value="promedio">Promedio</option>
+                    <option value="robusto">Robusto</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="estatura" class="form-label">Estatura</label>
+                <select id="estatura" class="form-select">
+                    <option value="baja">Baja</option>
+                    <option value="media">Media</option>
+                    <option value="alta">Alta</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="button" class="btn btn-dark">Generar Avatar</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        fetch('../header.html').then(r => r.text()).then(html => { document.getElementById('header').innerHTML = html; });
+    </script>
+</body>
+
+</html>

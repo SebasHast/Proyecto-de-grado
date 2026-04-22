@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Registrarse - Clothes</title>
+
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="../../Estilos/style.css" />
+    <style>
+        .card {
+            border: 0;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        html[data-theme="dark"] .card {
+            background: #141518;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+        }
+
+        html[data-theme="dark"] .form-control,
+        html[data-theme="dark"] .form-select {
+            background: #0e0f12;
+            color: #e6e6e6;
+            border-color: #2a2b2f;
+        }
+
+        html[data-theme="dark"] .form-control::placeholder {
+            color: #9aa0a6;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <main class="container py-4">
+        <h1 class="text-center fw-bold mb-1">Crear cuenta</h1>
+        <p class="text-center text-secondary mb-4">Solo pedimos lo esencial. Prometido.</p>
+
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card p-3 p-md-4">
+                    <form id="registroForm" novalidate>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label required">Nombre</label>
+                                <input type="text" class="form-control" id="nombre" name="nombre" required />
+                                <div class="invalid-feedback">Escribe tu nombre.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="apellido" class="form-label required">Apellido(s)</label>
+                                <input type="text" class="form-control" id="apellido" name="apellido" required />
+                                <div class="invalid-feedback">Escribe tu apellido.</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="email" class="form-label required">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="tunombre@email.com" required />
+                                <div class="invalid-feedback">Ingresa un email válido.</div>
+                            </div>
+
+                            <!-- NUEVO: Género -->
+                            <div class="col-md-6">
+                                <label for="genero" class="form-label required">Género</label>
+                                <select id="genero" name="genero" class="form-select" required>
+                                    <option value="">Selecciona</option>
+                                    <option value="hombre">Hombre</option>
+                                    <option value="mujer">Mujer</option>
+                                    <option value="noindica">Prefiero no decirlo</option>
+                                </select>
+                                <div class="invalid-feedback">Selecciona una opción.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="tallasuperior" class="form-label">Talla superior</label>
+                                <select id="tallasuperior" name="tallasuperior" class="form-select">
+                                    <option value="">Selecciona</option>
+                                    <option>XS</option>
+                                    <option>S</option>
+                                    <option>M</option>
+                                    <option>L</option>
+                                    <option>XL</option>
+                                    <option>XXL</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="tallainferior" class="form-label">Talla inferior</label>
+                                <select id="tallainferior" name="tallainferior" class="form-select" disabled>
+                                    <option value="">Selecciona el género primero</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-grid d-md-flex justify-content-md-end gap-2 mt-4">
+                            <button type="reset" class="btn btn-outline-secondary">Limpiar</button>
+                            <button id="submitBtn" type="submit" class="btn btn-dark">
+                                <span class="submit-text">Registrarme</span>
+                                <span class="spinner-border spinner-border-sm d-none" aria-hidden="true"></span>
+                            </button>
+                        </div>
+
+                        <div id="msg" class="alert mt-3 d-none" role="alert"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Header + tema
+        fetch('../../header.html').then(r => r.text()).then(html => {
+            document.getElementById('header').innerHTML = html;
+            const root = document.documentElement;
+            function getStoredTheme() {
+                return localStorage.getItem('theme') ||
+                    (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            }
+            function setTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('theme', theme);
+                document.querySelectorAll('[data-action="toggle-theme"] i').forEach(icon => {
+                    icon.classList.toggle('fa-moon', theme !== 'dark');
+                    icon.classList.toggle('fa-sun', theme === 'dark');
+                });
+            }
+            function wireButtons() {
+                document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const next = (localStorage.getItem('theme') || getStoredTheme()) === 'dark' ? 'light' : 'dark';
+                        setTheme(next);
+                    });
+                });
+            }
+            setTheme(getStoredTheme());
+            wireButtons();
+        });
+
+        // ---------- Lógica del formulario ----------
+        const form = document.getElementById('registroForm');
+        const msg = document.getElementById('msg');
+        const btn = document.getElementById('submitBtn');
+        const spinner = btn.querySelector('.spinner-border');
+        const btnText = btn.querySelector('.submit-text');
+
+        const generoSel = document.getElementById('genero');
+        const tallaInf = document.getElementById('tallainferior');
+
+        const opciones = {
+            hombre: ['28', '30', '32', '34', '36', '38', '40', '42'],
+            mujer: ['4', '6', '8', '10', '12', '14', '16']
+        };
+
+        function renderTallaInferior(genero) {
+            tallaInf.innerHTML = '';
+            if (!genero) {
+                tallaInf.innerHTML = '<option value="">Selecciona el género primero</option>';
+                tallaInf.disabled = true;
+                return;
+            }
+            tallaInf.disabled = false;
+
+            if (genero === 'noindica') {
+                const g1 = document.createElement('optgroup');
+                g1.label = 'Hombre';
+                opciones.hombre.forEach(v => {
+                    const o = document.createElement('option'); o.value = v; o.textContent = v; g1.appendChild(o);
+                });
+                const g2 = document.createElement('optgroup');
+                g2.label = 'Mujer';
+                opciones.mujer.forEach(v => {
+                    const o = document.createElement('option'); o.value = v; o.textContent = v; g2.appendChild(o);
+                });
+                tallaInf.appendChild(g1);
+                tallaInf.appendChild(g2);
+                const placeholder = document.createElement('option');
+                placeholder.value = ''; placeholder.textContent = 'Selecciona una talla';
+                placeholder.selected = true; placeholder.disabled = true;
+                tallaInf.prepend(placeholder);
+                return;
+            }
+
+            // hombre o mujer
+            const placeholder = document.createElement('option');
+            placeholder.value = ''; placeholder.textContent = 'Selecciona';
+            placeholder.selected = true; placeholder.disabled = true;
+            tallaInf.appendChild(placeholder);
+
+            opciones[genero].forEach(v => {
+                const o = document.createElement('option'); o.value = v; o.textContent = v;
+                tallaInf.appendChild(o);
+            });
+        }
+
+        generoSel.addEventListener('change', () => renderTallaInferior(generoSel.value));
+        // estado inicial
+        renderTallaInferior('');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+
+            const payload = {
+                nombre: form.nombre.value.trim(),
+                apellido: form.apellido.value.trim(),
+                email: form.email.value.trim(),
+                tallasuperior: form.tallasuperior.value,
+                tallainferior: form.tallainferior.value,
+                genero: form.genero.value   // 'hombre' | 'mujer' | 'noindica'
+            };
+
+            btn.disabled = true; spinner.classList.remove('d-none'); btnText.textContent = 'Enviando...';
+            msg.className = 'alert mt-3 d-none'; msg.textContent = '';
+
+            try {
+                const res = await fetch('https://retoolapi.dev/UThqSI/data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Error en el servidor (' + res.status + ')');
+
+                form.reset();
+                form.classList.remove('was-validated');
+                renderTallaInferior(''); // reset de lista dependiente
+                msg.className = 'alert alert-success mt-3';
+                msg.textContent = 'Registro enviado. Te contactaremos pronto.';
+            } catch (err) {
+                msg.className = 'alert alert-danger mt-3';
+                msg.textContent = 'No pudimos guardar tu registro. Intenta de nuevo en un momento.';
+                console.error(err);
+            } finally {
+                btn.disabled = false; spinner.classList.add('d-none'); btnText.textContent = 'Registrarme';
+            }
+
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
+
+            // Genera código 6 dígitos y vencimiento (15 min)
+            const code = String(Math.floor(100000 + Math.random() * 900000));
+            const expMs = Date.now() + 15 * 60 * 1000; // 15 min
+            const codigoEmpaquetado = `${code}|${expMs}`; // <-- aquí empaquetamos
+
+            const payload = {
+                nombre: form.nombre.value.trim(),
+                apellido: form.apellido.value.trim(),
+                email: form.email.value.trim(),
+                tallasuperior: form.tallasuperior.value,
+                tallainferior: form.tallainferior.value,
+                genero: form.genero.value, // 'hombre' | 'mujer' | 'noindica'
+                codigo: codigoEmpaquetado, // <-- un solo campo con código+exp
+                verificado: false
+            };
+
+            btn.disabled = true; spinner.classList.remove('d-none'); btnText.textContent = 'Enviando...';
+            msg.className = 'alert mt-3 d-none'; msg.textContent = '';
+
+            try {
+                // 1) Guardar en Retool
+                const res = await fetch('https://retoolapi.dev/UThqSI/data', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Error guardando registro');
+
+                // 2) Enviar correo con SOLO el código visible (sin el timestamp)
+                await fetch('/api/send-confirmation', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: payload.email, code })  // enviamos "123456"
+                });
+
+                msg.className = 'alert alert-success mt-3';
+                msg.textContent = 'Revisa tu correo y confirma el código en la siguiente pantalla.';
+                form.reset(); form.classList.remove('was-validated');
+                setTimeout(() => location.href = '/Contenido/auth/verificar.html', 1000);
+            } catch (err) {
+                console.error(err);
+                msg.className = 'alert alert-danger mt-3';
+                msg.textContent = 'No pudimos completar el registro. Intenta de nuevo.';
+            } finally {
+                btn.disabled = false; spinner.classList.add('d-none'); btnText.textContent = 'Registrarme';
+            }
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Verificar cuenta - Clothes</title>
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../Estilos/style.css">
+</head>
+
+<body>
+    <div id="header"></div>
+
+    <main class="container py-5" style="max-width:560px">
+        <h1 class="fw-bold mb-3 text-center">Verificar cuenta</h1>
+        <p class="text-secondary text-center">Hemos enviado un código a tu correo. Escríbelo para activar tu cuenta.</p>
+
+        <form id="verifyForm" class="mt-4" novalidate>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" required>
+                <div class="invalid-feedback">Ingresa tu email.</div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Código de verificación</label>
+                <input type="text" class="form-control" id="code" inputmode="numeric" pattern="\\d{6}" required>
+                <div class="invalid-feedback">Ingresa el código de 6 dígitos.</div>
+            </div>
+            <button class="btn btn-dark w-100" type="submit">Confirmar</button>
+            <div id="msg" class="alert mt-3 d-none" role="alert"></div>
+        </form>
+    </main>
+
+    <script src="../../bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script>
+        fetch('/header.html')
+            .then(r => r.text())
+            .then(html => { 
+                document.getElementById('header').innerHTML = html;
+                const root = document.documentElement;
+
+                function getStoredTheme() {
+                    return localStorage.getItem('theme') ||
+                        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                }
+
+                function setTheme(theme) {
+                    root.setAttribute('data-theme', theme);
+                    localStorage.setItem('theme', theme);
+                    document.querySelectorAll('[data-action="toggle-theme"] i').forEach(icon => {
+                        icon.classList.toggle('fa-moon', theme !== 'dark');
+                        icon.classList.toggle('fa-sun', theme === 'dark');
+                    });
+                }
+
+                function wireButtons() {
+                    document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const next = (localStorage.getItem('theme') || getStoredTheme()) === 'dark' ? 'light' : 'dark';
+                            setTheme(next);
+                        });
+                    });
+                }
+
+                setTheme(getStoredTheme());
+                wireButtons();
+            });
+    </script>
+    <script>
+        // ...tu header + tema...
+
+        const form = document.getElementById('verifyForm');
+        const msg = document.getElementById('msg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
+
+            const email = document.getElementById('email').value.trim();
+            const code = document.getElementById('code').value.trim();
+
+            try {
+                // Buscar por email
+                const res = await fetch('https://retoolapi.dev/UThqSI/data?email=' + encodeURIComponent(email));
+                if (!res.ok) throw new Error('No se pudo consultar');
+                const rows = await res.json();
+                if (!rows.length) throw new Error('No existe un registro con ese email');
+                const user = rows[rows.length - 1]; // último registro
+
+                if (user.verificado === true) {
+                    msg.className = 'alert alert-info mt-3';
+                    msg.textContent = 'Esta cuenta ya estaba verificada.';
+                    return;
+                }
+
+                // user.codigo viene como "123456|1730000000000" o tal vez sólo "123456"
+                const partes = String(user.codigo || '').split('|');
+                const serverCode = partes[0] || '';
+                const expMs = partes[1] ? parseInt(partes[1], 10) : null;
+
+                if (code !== serverCode) {
+                    msg.className = 'alert alert-danger mt-3';
+                    msg.textContent = 'Código incorrecto.';
+                    return;
+                }
+                if (expMs && Date.now() > expMs) {
+                    msg.className = 'alert alert-warning mt-3';
+                    msg.textContent = 'El código ha caducado. Regístrate de nuevo para recibir uno nuevo.';
+                    return;
+                }
+
+                // Marcar verificado
+                const up = await fetch('https://retoolapi.dev/UThqSI/data/' + user.id, {
+                    method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ verificado: true })
+                });
+                if (!up.ok) throw new Error('No se pudo actualizar el estado');
+
+                msg.className = 'alert alert-success mt-3';
+                msg.textContent = 'Cuenta verificada. ¡Bienvenido!';
+                setTimeout(() => location.href = '../../index.html', 1200);
+            } catch (err) {
+                console.error(err);
+                msg.className = 'alert alert-danger mt-3';
+                msg.textContent = err.message || 'Error al verificar.';
+            }
+        });
+    </script>
+</body>
+
+</html>

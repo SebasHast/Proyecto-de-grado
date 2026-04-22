@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hoodies - Clothes</title>
+
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../fonts/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="../Estilos/style.css">
+  <style>
+    /* Mini estilos específicos del grid de marcas (puedes moverlos a categorias.css si quieres) */
+    .brand-card .card { border: 0; border-radius: 10px; overflow: hidden; }
+    .brand-card .card-img-top { aspect-ratio: 4 / 5; object-fit: cover; }
+    .brand-card .card-body { display: flex; justify-content: center; align-items: center; padding: .75rem; }
+    .brand-card .brand-logo { height: 26px; max-width: 120px; object-fit: contain; filter: none; }
+    html[data-theme="dark"] .brand-card .card { background: #111; }
+    html[data-theme="dark"] .brand-card .brand-logo { filter: brightness(1) contrast(1.1); }
+    /* hover amable */
+    .brand-card a { text-decoration: none; }
+    .brand-card .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.12); transition: .2s; }
+    
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+
+  <main class="container py-4">
+    <section class="text-center mb-4">
+      <h1 class="fw-bold">HOODIES</h1>
+      <p class="text-secondary m-0">Explora las mejores colecciones, de las mejores marcas.</p>
+    </section>
+
+    <!-- Grid de marcas -->
+    <section class="row g-4 brand-card">
+      <!-- Marca 1 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/true.html" class="card h-100">
+          <img src="../Imagenes/Marcas/True/true_hoodie_1.jpg" class="card-img-top" alt="Hoodie de True">
+          <div class="card-body">
+            <!-- Logo de la marca (sin texto ni precio) -->
+            <img src="../Imagenes/Marcas/True/true_logo.png" alt="TRUE" class="brand-logo">
+          </div>
+        </a>
+      </div>
+
+      <!-- Marca 2 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/savage.html" class="card h-100">
+          <img src="../Imagenes/Marcas/Savage/savage_hoodie_1.jpg" class="card-img-top" alt="Hoodie de Savage">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/Savage/savage_logo.png" alt="SAVAGE" class="brand-logo" >
+          </div>
+        </a>
+      </div>
+
+      <!-- Marca 3 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/undergold.html" class="card h-100">
+          <img src="../Imagenes/Marcas/Undergold/undergold_hoodie_1.jpg" class="card-img-top" alt="Hoodie de Undergold">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/Undergold/undergold_logo.png" alt="UNDERGOLD" class="brand-logo">
+          </div>
+        </a>
+      </div>
+
+      <!-- Marca 4 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/Weedgreen/weedgreen.html" class="card h-100">
+          <img src="../Imagenes/Marcas/Weedgreen/weedgreen_hoodie_1.jpg" class="card-img-top" alt="Hoodie de Otra Marca">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/Weedgreen/weedgreen_logo.png" alt="OTRA MARCA" class="brand-logo">
+          </div>
+        </a>
+      </div>
+      <!-- Marca 5 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/true.html" class="card h-100">
+          <img src="../Imagenes/Marcas/True/true_hoodie_1.jpg" class="card-img-top" alt="Hoodie de True">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/True/true_logo.png" alt="TRUE" class="brand-logo">
+          </div>
+        </a>
+      </div>
+
+      <!-- Marca 6 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/savage.html" class="card h-100">
+          <img src="../Imagenes/Marcas/Savage/savage_hoodie_1.jpg" class="card-img-top" alt="Hoodie de Savage">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/Savage/savage_logo.png" alt="SAVAGE" class="brand-logo" >
+          </div>
+        </a>
+      </div>
+
+      <!-- Marca 7 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/undergold.html" class="card h-100">
+          <img src="../Imagenes/Marcas/Undergold/undergold_hoodie_1.jpg" class="card-img-top" alt="Hoodie de Undergold">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/Undergold/undergold_logo.png" alt="UNDERGOLD" class="brand-logo">
+          </div>
+        </a>
+      </div>
+
+      <!-- Marca 8 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <a href="/Contenido/marcas/otra.html" class="card h-100">
+          <img src="../Imagenes/Marcas/Weedgreen/weedgreen_hoodie_1.jpg" class="card-img-top" alt="Hoodie de Otra Marca">
+          <div class="card-body">
+            <img src="../Imagenes/Marcas/Weedgreen/weedgreen_logo.png" alt="OTRA MARCA" class="brand-logo">
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Carga header y activa el toggle de tema que ya usamos en el resto del sitio
+    fetch('../header.html')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('header').innerHTML = html;
+
+        const root = document.documentElement;
+        function getStoredTheme(){ return localStorage.getItem('theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); }
+        function setTheme(theme){
+          root.setAttribute('data-theme', theme);
+          localStorage.setItem('theme', theme);
+          document.querySelectorAll('[data-action="toggle-theme"] i').forEach(icon=>{
+            icon.classList.toggle('fa-moon', theme !== 'dark');
+            icon.classList.toggle('fa-sun',  theme === 'dark');
+          });
+        }
+        function wireButtons(){
+          document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+              const next = (localStorage.getItem('theme')||getStoredTheme())==='dark' ? 'light':'dark';
+              setTheme(next);
+            });
+          });
+        }
+        setTheme(getStoredTheme());
+        wireButtons();
+      });
+  </script>
+</body>
+</html>
