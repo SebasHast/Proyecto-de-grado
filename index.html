@@ -1,83 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Clothes</title>
-
+  <meta name="description" content="Descubre marcas emergentes colombianas, explora nuevos estilos y crea looks que cuentan tu historia en Clothes.">
+  <meta name="theme-color" content="#f6f4ef">
+  <title>CLOTHES — Descubre tu estilo</title>
   <link rel="stylesheet" href="./bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" href="./fonts/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="./Fonts/fontawesome/css/all.min.css">
   <link rel="stylesheet" href="./Estilos/style.css">
 </head>
-
 <body>
-  <div id="header"></div>
-
-  <main>
-    <section class="intro-colombia text-center py-4">
-      <h1>Explora todo lo que Colombia tiene para ti</h1>
-    </section>
-
-    <section class="productos container pb-5">
-      <div class="row g-4">
-        <div class="col-12 col-md-4">
-          <article class="producto hoodies d-flex justify-content-center align-items-center"
-            onclick="window.location.href='/Contenido/hoodies.html'">
-            <h2>Hoodies</h2>
-          </article>
-
-        </div>
-        <div class="col-12 col-md-4">
-          <article class="producto basicos d-flex justify-content-center align-items-center">
-            <h2>Básicos</h2>
-          </article>
-        </div>
-        <div class="col-12 col-md-4">
-          <article class="producto pantalones d-flex justify-content-center align-items-center">
-            <h2>Pantalones</h2>
-          </article>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    fetch('./header.html')
-      .then(r => r.text())
-      .then(html => {
-        document.getElementById('header').innerHTML = html;
-        const root = document.documentElement;
-
-        function getStoredTheme() {
-          return localStorage.getItem('theme') ||
-            (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        }
-
-        function setTheme(theme) {
-          root.setAttribute('data-theme', theme);
-          localStorage.setItem('theme', theme);
-          document.querySelectorAll('[data-action="toggle-theme"] i').forEach(icon => {
-            icon.classList.toggle('fa-moon', theme !== 'dark');
-            icon.classList.toggle('fa-sun', theme === 'dark');
-          });
-        }
-
-        function wireButtons() {
-          document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn => {
-            btn.addEventListener('click', () => {
-              const next = (localStorage.getItem('theme') || getStoredTheme()) === 'dark' ? 'light' : 'dark';
-              setTheme(next);
-            });
-          });
-        }
-
-        setTheme(getStoredTheme());
-        wireButtons();
-      });
-  </script>
+<div id="header"></div>
+<main>
+  <section class="hero container-fluid px-0" aria-labelledby="hero-title">
+    <div class="hero-copy"><p class="eyebrow">Moda colombiana · Nuevas voces</p><h1 id="hero-title">Descubre<br>tu estilo<span>.</span></h1><p class="hero-intro">Explora prendas de marcas emergentes colombianas, encuentra nuevos estilos y crea looks que representen quién eres.</p><div class="hero-actions"><a href="#explorar" class="btn btn-dark">Explorar prendas <i class="fa-solid fa-arrow-right ms-2" aria-hidden="true"></i></a><a href="#estilos" class="text-link">Descubrir estilos</a></div><p class="hero-note"><span></span> Hecho para descubrir algo nuevo</p></div>
+    <div class="hero-visual" role="img" aria-label="Selección de moda colombiana de estilo urbano"><div class="hero-image"></div><div class="hero-caption"><span>01 / 04</span><span>Una nueva forma de vestir</span></div><div class="hero-stamp" aria-hidden="true">CO<br><small>EST. 2025</small></div></div>
+  </section>
+  <section id="explorar" class="section-wrap container" aria-labelledby="explore-title"><div class="section-heading"><div><p class="eyebrow">Encuentra tu próximo favorito</p><h2 id="explore-title">Encuentra lo que buscas</h2></div><p>Descubre prendas de diferentes marcas y construye tu propio estilo.</p></div>
+    <div class="category-grid">
+      <a class="category-card" href="./Contenido/ropa_hombre.html"><img src="./Imagenes/Samples/Streetwear_hombre.jpg" alt="Look urbano de la colección para hombre" loading="lazy"><span class="category-index">01 — COLECCIÓN</span><div><h3>Hombre</h3><span class="category-cta">Explorar <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span></div></a>
+      <a class="category-card" href="./Contenido/ropa_mujer.html"><img src="./Imagenes/Samples/Casual_mujer.jpg" alt="Look casual de la colección para mujer" loading="lazy"><span class="category-index">02 — COLECCIÓN</span><div><h3>Mujer</h3><span class="category-cta">Explorar <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span></div></a>
+      <a class="category-card" href="./Contenido/unisex.html"><img src="./Imagenes/Marcas/True/true_hoodie_1.jpg" alt="Hoodie de la selección de marcas" loading="lazy"><span class="category-index">03 — PARA TODOS</span><div><h3>Unisex</h3><span class="category-cta">Explorar <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span></div></a>
+    </div>
+  </section>
+  <section id="estilos" class="style-section" aria-labelledby="styles-title"><div class="container section-wrap"><div class="section-heading"><div><p class="eyebrow">Encuentra tu estética</p><h2 id="styles-title">¿Cuál es tu estilo?</h2></div><p>Una mezcla de referencias, marcas y prendas para inspirar tu próximo look.</p></div>
+    <div class="style-grid">
+      <a href="./Contenido/estilo_streetwear.html" class="style-card"><img src="./Imagenes/Samples/Streetwear_hombre.jpg" alt="" loading="lazy"><span>01</span><h3>Streetwear</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_old-money.html" class="style-card"><img src="./Imagenes/Samples/Casual_mujer.jpg" alt="" loading="lazy"><span>02</span><h3>Old Money</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_y2k.html" class="style-card"><img src="./Imagenes/Samples/Summer_mujer.jpg" alt="" loading="lazy"><span>03</span><h3>Y2K</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_minimalista.html" class="style-card"><img src="./Imagenes/Samples/Basico_hombre.jpg" alt="" loading="lazy"><span>04</span><h3>Minimalista</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_vintage.html" class="style-card"><img src="./Imagenes/Samples/Casual_mujer.jpg" alt="" loading="lazy"><span>05</span><h3>Vintage</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_casual.html" class="style-card"><img src="./Imagenes/Samples/Casual_hombre.jpg" alt="" loading="lazy"><span>06</span><h3>Casual</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_formal.html" class="style-card"><img src="./Imagenes/Samples/Basico_mujer.jpg" alt="" loading="lazy"><span>07</span><h3>Formal</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+      <a href="./Contenido/estilo_techwear.html" class="style-card"><img src="./Imagenes/Marcas/Undergold/undergold_hoodie_1.jpg" alt="" loading="lazy"><span>08</span><h3>Techwear</h3><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </div></div></section>
+  <section id="marcas" class="brand-feature container" aria-labelledby="brand-title"><div class="brand-feature-image"><img src="./Imagenes/Marcas/Savage/savage_hoodie_1.jpg" alt="Prenda de una marca emergente disponible en Clothes" loading="lazy"><span>HECHO AQUÍ, PARA TODOS</span></div><div class="brand-feature-copy"><p class="eyebrow">Nuevas marcas · Nuevas historias</p><h2 id="brand-title">Descubre el talento de Colombia.</h2><p>Conoce marcas emergentes y emprendimientos que están creando nuevas formas de entender la moda. Cada descubrimiento es una oportunidad para vestir algo distinto.</p><a class="btn btn-outline-dark" href="./Contenido/marcas.html">Explorar marcas <i class="fa-solid fa-arrow-right ms-2" aria-hidden="true"></i></a><div class="brand-signoff">CLOTHES <span>Una comunidad que viste distinto.</span></div></div></section>
+  <section class="avatar-banner container" aria-labelledby="avatar-title"><div class="avatar-banner-art" aria-hidden="true"><div class="avatar-orbit orbit-one"></div><div class="avatar-orbit orbit-two"></div><div class="avatar-silhouette"><i class="fa-regular fa-user"></i></div><span class="avatar-label">TU ESPACIO, TU ESTILO</span></div><div class="avatar-banner-copy"><p class="eyebrow">Tu estilo, a tu medida</p><h2 id="avatar-title">Crea tu avatar.</h2><p>Ajusta tu avatar 3D y combina prendas por tipo y color en el probador virtual.</p><a href="./Contenido/probador.html" class="btn btn-light">Crear mi avatar 3D <i class="fa-solid fa-arrow-right ms-2" aria-hidden="true"></i></a><small>Configura tus medidas, crea tu conjunto y guárdalo en el carrito.</small></div></section>
+  <section class="final-cta container" aria-labelledby="cta-title"><p class="eyebrow">CLOTHES / 001</p><h2 id="cta-title">Tu estilo empieza aquí.</h2><p>Explora. Descubre. Combina. Crea.</p><a href="#explorar" class="text-link">Comenzar a explorar <i class="fa-solid fa-arrow-right ms-2" aria-hidden="true"></i></a></section>
+</main>
+<footer class="site-footer"><div class="container"><a href="./index.html" class="footer-logo">CLOTHES</a><span>Moda colombiana, nuevas perspectivas.</span><a href="#header">Volver arriba ↑</a></div></footer>
+<script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+  fetch('./header.html').then(response => { if (!response.ok) throw new Error('No se pudo cargar la navegación'); return response.text(); }).then(html => {
+    document.getElementById('header').innerHTML = html;
+    const badge = document.querySelector('[data-cart-count]');
+    if (badge) { try { const cart = JSON.parse(localStorage.getItem('clothes.cart') || '[]'); badge.textContent = cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0); badge.hidden = Number(badge.textContent) === 0; } catch { badge.hidden = true; } }
+    const root = document.documentElement;
+    const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    root.setAttribute('data-theme', theme);
+    const toggle = document.querySelector('[data-action="toggle-theme"]');
+    const icon = toggle && toggle.querySelector('i');
+    const syncIcon = () => { if (icon) { icon.classList.toggle('fa-moon', root.getAttribute('data-theme') !== 'dark'); icon.classList.toggle('fa-sun', root.getAttribute('data-theme') === 'dark'); } };
+    syncIcon();
+    if (toggle) toggle.addEventListener('click', () => { const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; root.setAttribute('data-theme', next); localStorage.setItem('theme', next); syncIcon(); });
+  }).catch(error => console.error(error));
+</script>
 </body>
-
 </html>

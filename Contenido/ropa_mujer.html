@@ -1,92 +1,40 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="es" data-catalog-gender="mujer">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Clothes</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../fonts/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="/Estilos/style.css">
-    <link rel="stylesheet" href="/Estilos/categorias.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explora prendas de marcas emergentes y emprendimientos de moda colombiana para mujer en Clothes.">
+  <title>Ropa para mujer — CLOTHES</title>
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../Fonts/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="../Estilos/style.css">
+  <link rel="stylesheet" href="../Estilos/categorias.css">
+  <link rel="stylesheet" href="../Estilos/shop.css">
 </head>
-
 <body>
-    <div id="header"></div>
-
-    <main>
-        <section class="categoria-intro text-center py-4">
-            <h2>DESCUBRE TU ESTILO</h2>
-            <p>Inspírate con nuestra galería y encuentra tu look ideal.</p>
-        </section>
-
-        <section class="categoria-estilos container pb-5">
-            <div class="row g-4">
-                <div class="col-6 col-md-3">
-                    <article class="estilo">
-                        <img src="/Imagenes/Samples/Summer_mujer.jpg" alt="Summer Vibes">
-                        <h3>SUMMER VIBES</h3>
-                    </article>
-                </div>
-                <div class="col-6 col-md-3">
-                    <article class="estilo">
-                        <img src="/Imagenes/Samples/Streetwear_mujer.jpg" alt="Streetwear">
-                        <h3>STREETWEAR</h3>
-                    </article>
-                </div>
-                <div class="col-6 col-md-3">
-                    <article class="estilo">
-                        <img src="/Imagenes/Samples/Casual_mujer.jpg" alt="Casual">
-                        <h3>CASUAL</h3>
-                    </article>
-                </div>
-                <div class="col-6 col-md-3">
-                    <article class="estilo">
-                        <img src="/Imagenes/Samples/Basico_mujer.jpg" alt="Basic">
-                        <h3>BASIC</h3>
-                    </article>
-                </div>
-            </div>
-        </section>
-    </main>
-
-
-    <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script>
-        fetch('../header.html')
-            .then(r => r.text())
-            .then(html => {
-                document.getElementById('header').innerHTML = html;
-
-                const root = document.documentElement;
-
-                function getStoredTheme() {
-                    return localStorage.getItem('theme') ||
-                        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-                }
-
-                function setTheme(theme) {
-                    root.setAttribute('data-theme', theme);
-                    localStorage.setItem('theme', theme);
-                    document.querySelectorAll('[data-action="toggle-theme"] i').forEach(icon => {
-                        icon.classList.toggle('fa-moon', theme !== 'dark');
-                        icon.classList.toggle('fa-sun', theme === 'dark');
-                    });
-                }
-
-                function wireButtons() {
-                    document.querySelectorAll('[data-action="toggle-theme"]').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            const next = (localStorage.getItem('theme') || getStoredTheme()) === 'dark' ? 'light' : 'dark';
-                            setTheme(next);
-                        });
-                    });
-                }
-
-                setTheme(getStoredTheme());
-                wireButtons();
-            });
-    </script>
+  <div id="header"></div>
+  <main class="catalog-page container">
+    <nav class="catalog-breadcrumb" aria-label="Ruta"><a href="../index.html">Inicio</a><span>/</span><span>Mujer</span></nav>
+    <section class="catalog-intro"><p class="eyebrow">CLOTHES / COLECCIÓN 02</p><h1>Mujer<span>.</span></h1><p>Descubre prendas y marcas que te invitan a expresar quién eres. Explora prendas de marcas colombianas y encuentra nuevas ideas.</p><div class="catalog-meta"><span id="resultCount" aria-live="polite"></span><span>Marcas colombianas · precios referenciales</span></div></section>
+    <section class="catalog-toolbar" aria-label="Filtros de catálogo">
+      <label class="catalog-search"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span class="visually-hidden">Buscar prenda o marca</span><input id="catalogSearch" type="search" placeholder="Busca prenda o marca…"></label>
+      <label><span class="visually-hidden">Categoría</span><select id="categoryFilter"><option value="">Categorías</option><option>Camisetas</option><option>Tops</option><option>Camisas</option><option>Hoodies</option><option>Chaquetas</option><option>Pantalones</option><option>Jeans</option><option>Faldas</option><option>Vestidos</option><option>Zapatos</option><option>Accesorios</option></select></label>
+      <label><span class="visually-hidden">Marca</span><select id="brandFilter"><option value="">Todas las marcas</option></select></label>
+      <label><span class="visually-hidden">Precio</span><select id="priceFilter"><option value="">Precio</option><option value="under-100">Menos de 100.000 COP</option><option value="100-180">100.000–180.000 COP</option><option value="over-180">Más de 180.000 COP</option></select></label>
+      <label><span class="visually-hidden">Talla</span><select id="sizeFilter"><option value="">Talla</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>2XL</option><option>30</option></select></label>
+      <label><span class="visually-hidden">Color</span><select id="colorFilter"><option value="">Color</option></select></label>
+      <label><span class="visually-hidden">Estilo</span><select id="styleFilter"><option value="">Estilo</option><option>Streetwear</option><option>Old Money</option><option>Y2K</option><option>Minimalista</option><option>Vintage</option><option>Casual</option><option>Formal</option><option>Techwear</option></select></label>
+      <label><span class="visually-hidden">Ordenar</span><select id="sortFilter"><option value="featured">Destacados</option><option value="price-low">Precio: menor a mayor</option><option value="price-high">Precio: mayor a menor</option></select></label>
+      <button id="clearFilters" class="catalog-clear" type="button">Limpiar filtros</button>
+    </section>
+    <p class="catalog-demo-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> Las prendas marcadas como muestra tienen precio referencial. Las prendas con tienda oficial enlazan a la marca para consultar precio y disponibilidad.</p>
+    <section id="productGrid" class="catalog-grid" aria-label="Prendas para mujer"></section>
+    <p id="emptyState" class="catalog-empty" hidden>No encontramos prendas con esos filtros. Prueba con otra búsqueda.</p>
+    <div id="catalogNotice" class="catalog-notice" role="status" aria-live="polite" hidden></div>
+  </main>
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="modalProductName" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><button type="button" class="btn-close modal-close" data-bs-dismiss="modal" aria-label="Cerrar"></button><div id="productModalContent"></div></div></div></div>
+  <script src="../bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/clothes-data.js"></script>
+  <script src="./js/catalogo.js"></script>
 </body>
-
 </html>

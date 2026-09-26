@@ -1,61 +1,23 @@
-<header class="border-bottom">
-  <nav class="navbar navbar-expand-lg navbar-light bg-white">
-    <div class="container position-relative py-2">
-
-      <!-- Logo versión móvil -->
-      <a class="navbar-brand d-lg-none logo m-0" href="/index.html">CLOTHES</a>
-
-      <!-- Botón hamburguesa -->
-      <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
-        aria-controls="navMain" aria-expanded="false" aria-label="Menú">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- Logo versión desktop -->
-      <a class="navbar-brand d-none d-lg-block position-absolute top-50 start-50 translate-middle logo m-0"
-        href="/index.html">CLOTHES</a>
-
-      <!-- Menú colapsable -->
+<header class="site-header">
+  <nav class="navbar navbar-expand-lg" aria-label="Navegación principal">
+    <div class="container-fluid site-nav-inner">
+      <a class="navbar-brand logo" href="/index.html" aria-label="Clothes, inicio">CLOTHES<span>.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Abrir menú"><span class="navbar-toggler-icon"></span></button>
       <div class="collapse navbar-collapse" id="navMain">
-        <!-- Menú izquierdo -->
-        <ul class="navbar-nav me-auto">
-          <li class="nav-item"><a class="nav-link link-dark" href="/Contenido/ropa_hombre.html">Hombre</a></li>
-          <li class="nav-item"><a class="nav-link link-dark" href="/Contenido/ropa_mujer.html">Mujer</a></li>
-          <li class="nav-item"><a class="nav-link link-dark" href="/Contenido/innovacion.html">Innovación</a></li>
-          <li class="nav-item"><a class="nav-link link-dark" href="/Contenido/probador.html">Probador</a></li>
+        <ul class="navbar-nav main-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="/index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="/Contenido/ropa_hombre.html">Hombre</a></li>
+          <li class="nav-item"><a class="nav-link" href="/Contenido/ropa_mujer.html">Mujer</a></li>
+          <li class="nav-item"><a class="nav-link" href="/Contenido/unisex.html">Unisex</a></li>
+          <li class="nav-item"><a class="nav-link" href="/Contenido/estilos.html">Estilos</a></li>
+          <li class="nav-item"><a class="nav-link" href="/Contenido/marcas.html">Marcas</a></li>
         </ul>
-
-        <!-- Menú derecho -->
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link link-dark d-flex align-items-center" href="/Contenido/buscar.html">
-              <i class="fas fa-search me-1"></i><span class="d-none d-md-inline"></span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link link-dark d-flex align-items-center" href="/Contenido/carrito.html">
-              <i class="fas fa-shopping-cart me-1"></i><span class="d-none d-md-inline"></span>
-            </a>
-          </li>
-          <!-- Perfil con menú desplegable -->
-          <li class="nav-item dropdown">
-            <a class="nav-link link-dark d-flex align-items-center " href="#" id="perfilMenu" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-user me-1"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="perfilMenu">
-              <li><a class="dropdown-item" href="/Contenido/auth/iniciar-sesion.html">Iniciar sesión</a></li>
-              <li><a class="dropdown-item" href="/Contenido/auth/registrarse.html">Registrarse</a></li>
-            </ul>
-          </li>
-          <!-- Botón de cambio de tema -->
-          <li>
-            <button class="nav-link link-dark d-flex align-items-center" type="button" data-action="toggle-theme">
-              <i class="fa-solid fa-moon"></i>
-            </button>
-          </li>
-
-        </ul>
+        <div class="nav-actions">
+          <a class="nav-icon" href="/Contenido/buscar.html" aria-label="Buscar prendas"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><span>Buscar</span></a>
+          <a class="nav-icon" href="/Contenido/carrito.html" aria-label="Carrito"> <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i><span>Carrito <b data-cart-count hidden>0</b></span></a>
+          <a class="nav-icon" href="/Contenido/probador.html" aria-label="Mi avatar"><i class="fa-regular fa-user" aria-hidden="true"></i><span>Mi avatar</span></a>
+          <button class="nav-icon theme-toggle" type="button" data-action="toggle-theme" aria-label="Cambiar tema"><i class="fa-solid fa-moon" aria-hidden="true"></i></button>
+        </div>
       </div>
     </div>
   </nav>
