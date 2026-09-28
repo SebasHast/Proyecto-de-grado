@@ -1,0 +1,11 @@
+{
+  "name": "clothes-colombia",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "resend": "6.28.1"
+  }
+}

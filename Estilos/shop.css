@@ -19,6 +19,12 @@
 .cart-summary { display:grid; grid-template-columns:1fr 1fr; gap:30px; margin-top:38px; padding:28px; background:var(--soft,#eeece5); }
 .cart-summary h2 { font-size:22px; font-weight:500; }
 .cart-total { font-size:24px; }
+.cart-price-breakdown { display:grid; grid-template-columns:1fr auto; gap:9px 16px; margin:15px 0; align-items:center; font-size:11px; }
+.cart-price-breakdown > span { color:var(--muted); }
+.cart-price-breakdown > strong { text-align:right; font-weight:500; }
+.cart-price-breakdown .cart-savings { color:#587044; }
+.cart-price-breakdown .cart-final-label { padding-top:10px; border-top:1px solid var(--line); color:var(--ink); font-weight:600; }
+.cart-price-breakdown .cart-total { padding-top:10px; border-top:1px solid var(--line); font-size:21px; }
 .cart-explainer { max-width:420px; margin:14px 0; color:var(--muted); font-size:11px; line-height:1.7; }
 .cart-checkout h3 { margin:0 0 15px; font-size:16px; font-weight:500; }
 .brand-checkout { display:grid; gap:7px; margin:0 0 14px; padding-bottom:12px; border-bottom:1px solid var(--line); font-size:11px; }
@@ -32,6 +38,11 @@
 .avatar-profile h2,.avatar-preview h2,.tryon-heading h2 { margin:5px 0 22px; font-size:23px; font-weight:500; }
 .avatar-profile label { display:grid; gap:7px; margin-bottom:15px; font-size:10px; }
 .avatar-profile input,.avatar-profile select { width:100%; min-height:42px; border:1px solid var(--line); padding:0 10px; color:var(--ink); background:var(--page); }
+.avatar-profile .avatar-range-label { gap:5px; }
+.avatar-range-label > span { display:flex; justify-content:space-between; align-items:center; }
+.avatar-range-label output { color:var(--ink); font-size:11px; font-weight:600; font-variant-numeric:tabular-nums; }
+.avatar-profile input[type="range"] { min-height:24px; height:24px; padding:0; border:0; accent-color:#7a885e; background:transparent; cursor:pointer; }
+.avatar-profile input[type="range"]:focus-visible { outline:2px solid #7a885e; outline-offset:3px; }
 .avatar-profile .btn { width:100%; margin:6px 0; border-radius:0; }
 .avatar-reset { width:100%; margin-top:4px; }
 .avatar-private,.avatar-note { margin:16px 0 0; color:var(--muted); font-size:9px; line-height:1.65; }

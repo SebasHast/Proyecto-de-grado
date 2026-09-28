@@ -10,7 +10,7 @@ camera.position.set(0, 1.8, 6.2);
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
@@ -55,27 +55,82 @@ function mesh(geometry, mat, parent, position, scale) {
   return obj;
 }
 function sphere(parent, mat, pos, scale) { return mesh(new THREE.SphereGeometry(1, 32, 24), mat, parent, pos, scale); }
-function segment(parent, mat, a, b, radiusA, radiusB = radiusA) {
+function segment(parent, mat, a, b, radiusA, radiusB = radiusA, caps = true) {
   const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b), direction = end.clone().sub(start);
   const obj = mesh(new THREE.CylinderGeometry(radiusB, radiusA, direction.length(), 20, 1), mat, parent, start.clone().add(end).multiplyScalar(0.5).toArray());
   obj.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize());
-  sphere(parent, mat, a, [radiusA, radiusA, radiusA]);
-  sphere(parent, mat, b, [radiusB, radiusB, radiusB]);
+  if (caps === true) {
+    sphere(parent, mat, a, [radiusA, radiusA, radiusA]);
+    sphere(parent, mat, b, [radiusB, radiusB, radiusB]);
+  } else if (caps === 'end') sphere(parent, mat, b, [radiusB, radiusB, radiusB]);
+  else if (caps === 'start') sphere(parent, mat, a, [radiusA, radiusA, radiusA]);
   return obj;
 }
-function colorFor(label) {
-  const text = (label || '').toLocaleLowerCase('es');
-  if (text.includes('negro')) return '#30312f';
-  if (text.includes('blanco')) return '#f0eee8';
-  if (text.includes('azul')) return '#526f8b';
-  if (text.includes('gris')) return '#858780';
-  if (text.includes('café') || text.includes('chocolate')) return '#795844';
-  if (text.includes('beige')) return '#c8b894';
-  if (text.includes('amarillo')) return '#d1b648';
-  if (text.includes('rojo')) return '#a85049';
-  if (text.includes('verde')) return '#687852';
-  return '#89906f';
+// Elliptical ring mesh for a smooth torso silhouette. Each station is [height, halfWidth, depth].
+function loft(parent, mat, stations, sides = 32) {
+  // Interpolate between profile measurements to avoid the segmented, toy-like look.
+  const profile = new THREE.CatmullRomCurve3(stations.map(([y, rx, rz]) => new THREE.Vector3(rx, y, rz)), false, 'catmullrom', 0.18);
+  const smoothStations = Array.from({ length: (stations.length - 1) * 5 + 1 }, (_, index) => {
+    const point = profile.getPoint(index / ((stations.length - 1) * 5));
+    return [point.y, Math.max(0.06, point.x), Math.max(0.06, point.z)];
+  });
+  const vertices = [], indices = [];
+  for (const [y, rx, rz] of smoothStations) {
+    for (let i = 0; i < sides; i++) {
+      const angle = (i / sides) * Math.PI * 2;
+      vertices.push(Math.cos(angle) * rx, y, Math.sin(angle) * rz);
+    }
+  }
+  for (let ring = 0; ring < smoothStations.length - 1; ring++) {
+    for (let side = 0; side < sides; side++) {
+      const a = ring * sides + side;
+      const b = ring * sides + (side + 1) % sides;
+      const c = (ring + 1) * sides + side;
+      const d = (ring + 1) * sides + (side + 1) % sides;
+      indices.push(a, c, b, b, c, d);
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  return mesh(geometry, mat, parent, [0, 0, 0]);
 }
+function normalizedText(value) {
+  return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('es');
+}
+function colorFor(...labels) {
+  const source = labels.map(value => String(value || '')).join(' ');
+  const hex = source.match(/#[0-9a-f]{6}\b/i);
+  if (hex) return hex[0];
+  const text = normalizedText(source);
+  const palette = [
+    { words: ['negro', 'black'], color: '#30312f' },
+    { words: ['blanco', 'marfil', 'crudo', 'ivory', 'off white'], color: '#f0eee8' },
+    { words: ['rojo', 'red', 'vino', 'granate', 'burgundy'], color: '#b83f43' },
+    { words: ['azul', 'blue', 'navy', 'marino'], color: '#526f8b' },
+    { words: ['verde', 'green', 'oliva'], color: '#687852' },
+    { words: ['amarillo', 'yellow', 'mostaza'], color: '#d1b648' },
+    { words: ['naranja', 'orange', 'terracota'], color: '#c66d42' },
+    { words: ['rosado', 'rosa', 'pink', 'fucsia'], color: '#c7798d' },
+    { words: ['morado', 'purpura', 'violeta', 'lila', 'purple'], color: '#806b91' },
+    { words: ['gris', 'gray', 'grey'], color: '#858780' },
+    { words: ['cafe', 'chocolate', 'marron', 'camel', 'brown'], color: '#795844' },
+    { words: ['beige', 'arena', 'khaki', 'taupe'], color: '#c8b894' },
+    { words: ['multicolor', 'estampado'], color: '#c36e80' },
+  ];
+  const matches = palette.flatMap(entry => entry.words.map(word => ({ index: text.indexOf(word), color: entry.color })))
+    .filter(match => match.index >= 0)
+    .sort((a, b) => a.index - b.index);
+  // Neutral fallback for reference/sample items without a stated color.
+  return matches[0]?.color || '#898984';
+}
+const TOP_CATEGORIES = ['camisetas', 'hoodies', 'chaquetas', 'tops', 'camisas', 'sacos', 'buzos', 'sueteres', 'cardigans', 'blusas', 'bras', 'tops de bikini', 'top de bikini', 'ruanas', 'kimonos', 'chalecos'];
+const BOTTOM_CATEGORIES = ['pantalones', 'jeans', 'shorts', 'bermudas', 'faldas', 'bottom de bikini', 'bottoms de bikini', 'pareos'];
+const ONE_PIECE_CATEGORIES = ['vestidos', 'vestido', 'enterizos', 'jumpsuits', 'traje de bano entero', 'one piece', 'bodydress', 'bodies', 'body'];
+const isTop = item => TOP_CATEGORIES.includes(normalizedText(item?.category));
+const isBottom = item => BOTTOM_CATEGORIES.includes(normalizedText(item?.category));
+const isOnePiece = item => ONE_PIECE_CATEGORIES.includes(normalizedText(item?.category));
 function clearModel() {
   while (pivot.children.length) {
     const child = pivot.children[0];
@@ -89,15 +144,20 @@ function clearModel() {
 }
 function addHair(head, hairMat, style) {
   if (style === 'long') {
-    sphere(head, hairMat, [0, 0.02, -0.08], [0.48, 0.60, 0.39]);
-    sphere(head, hairMat, [-0.31, -0.20, 0.02], [0.16, 0.50, 0.23]);
-    sphere(head, hairMat, [0.31, -0.20, 0.02], [0.16, 0.50, 0.23]);
-    sphere(head, hairMat, [0, 0.39, 0.01], [0.40, 0.20, 0.38]);
+    // Keep the length behind the cheeks; the strands stay behind the eye/face plane.
+    sphere(head, hairMat, [0, -0.06, -0.20], [0.36, 0.56, 0.22]);
+    segment(head, hairMat, [-0.34, 0.12, 0.04], [-0.38, -0.58, -0.04], 0.075, 0.055);
+    segment(head, hairMat, [0.34, 0.12, 0.04], [0.38, -0.58, -0.04], 0.075, 0.055);
+    sphere(head, hairMat, [0, 0.25, -0.08], [0.37, 0.27, 0.27]);
+    sphere(head, hairMat, [0, 0.34, 0.04], [0.29, 0.10, 0.16]);
   } else if (style === 'curly') {
-    sphere(head, hairMat, [0, 0.22, -0.02], [0.48, 0.37, 0.42]);
-    for (let i = 0; i < 13; i++) {
-      const angle = (i / 13) * Math.PI * 2;
-      sphere(head, hairMat, [Math.cos(angle) * 0.39, 0.14 + (i % 3) * 0.06, Math.sin(angle) * 0.34], [0.13, 0.14, 0.13]);
+    // Curly volume sits on the crown and sides. No curls cross the forehead or eyes.
+    sphere(head, hairMat, [0, 0.25, -0.08], [0.40, 0.31, 0.31]);
+    for (let i = 0; i < 18; i++) {
+      const angle = (i / 18) * Math.PI * 2;
+      const front = Math.sin(angle);
+      if (front > 0.42) continue;
+      sphere(head, hairMat, [Math.cos(angle) * 0.35, 0.18 + (i % 3) * 0.055, -0.04 + front * 0.25], [0.10, 0.11, 0.10]);
     }
   } else {
     sphere(head, hairMat, [0, 0.22, -0.06], [0.46, 0.28, 0.40]);
@@ -123,14 +183,26 @@ function buildAvatar(state) {
   body.scale.set(width, heightScale, width);
   pivot.add(body);
   const isWoman = gender === 'mujer';
-  const shoulders = isWoman ? 0.42 : 0.48;
-  const hips = isWoman ? 0.39 : 0.35;
-  const topGarment = garments.find(item => ['Camisetas', 'Hoodies', 'Chaquetas', 'Tops', 'Camisas'].includes(item.category));
-  const bottomGarment = garments.find(item => ['Pantalones', 'Jeans', 'Shorts', 'Faldas'].includes(item.category));
+  const isMan = gender === 'hombre';
+  // Make shoulder, waist and hip proportions respond visibly to the selected profile.
+  const shoulders = isWoman ? 0.405 : isMan ? 0.50 : 0.45;
+  const waist = isWoman ? 0.285 : isMan ? 0.355 : 0.33;
+  const hips = isWoman ? 0.435 : isMan ? 0.365 : 0.39;
+  const torsoStations = [
+    [1.18, hips * 0.92, 0.245],
+    [1.34, hips, 0.27],
+    [1.52, waist, 0.225],
+    [1.72, waist * 1.08, 0.235],
+    [1.94, shoulders * 0.91, 0.27],
+    [2.12, shoulders * 0.94, 0.25],
+    [2.28, 0.17, 0.19],
+  ];
+  const topGarment = garments.find(isTop);
+  const bottomGarment = garments.find(isBottom);
+  const onePieceGarment = garments.find(isOnePiece);
 
   // Base mannequin: head, neck, trunk, arms and legs.
-  sphere(body, skin, [0, 1.31, 0], [hips, 0.34, 0.27]);
-  sphere(body, skin, [0, 1.84, 0], [shoulders, 0.61, 0.28]);
+  loft(body, skin, torsoStations);
   segment(body, skin, [-shoulders + 0.03, 2.16, 0], [-0.65, 1.65, 0], 0.14, 0.105);
   segment(body, skin, [-0.65, 1.65, 0], [-0.72, 1.14, 0.01], 0.105, 0.075);
   segment(body, skin, [shoulders - 0.03, 2.16, 0], [0.65, 1.65, 0], 0.14, 0.105);
@@ -142,50 +214,113 @@ function buildAvatar(state) {
     sphere(body, shoeMat, [side * legSpread * 1.2, 0.09, 0.10], [0.12, 0.085, 0.22]);
   }
   mesh(new THREE.CylinderGeometry(0.115, 0.13, 0.22, 24), skin, body, [0, 2.40, 0]);
-  const head = new THREE.Group(); head.position.set(0, 2.72, 0); body.add(head);
-  sphere(head, skin, [0, 0, 0], [0.34, 0.43, 0.31]);
+  const head = new THREE.Group(); head.position.set(0, 2.72, 0); head.scale.setScalar(0.68); body.add(head);
+  const faceProfile = isWoman
+    ? [[0.10,-0.43],[0.20,-0.36],[0.27,-0.20],[0.31,0.02],[0.30,0.23],[0.25,0.36],[0.15,0.43],[0,0.44]]
+    : [[0.12,-0.43],[0.23,-0.36],[0.30,-0.19],[0.33,0.04],[0.32,0.24],[0.26,0.37],[0.15,0.43],[0,0.44]];
+  const headShape = mesh(new THREE.LatheGeometry(faceProfile.map(([radius, y]) => new THREE.Vector2(radius, y)), 40), skin, head, [0, 0, 0], [1, 1, 0.88]);
   addHair(head, hairMat, profile.hair || 'short');
-  // Simple, friendly face on the front (+Z).
+  // Subtle facial features, layered in front of the head so they remain visible with long hair.
+  const eyeWhite = material('#f2eee7', 0.48);
+  const irisMat = material('#59473c', 0.42);
   for (const side of [-1, 1]) {
-    sphere(head, faceMat, [side * 0.12, 0.02, 0.293], [0.025, 0.026, 0.015]);
-    sphere(head, skin, [side * 0.34, -0.04, 0.005], [0.07, 0.11, 0.065]);
+    sphere(head, eyeWhite, [side * 0.12, 0.035, 0.294], [0.043, 0.032, 0.018]);
+    sphere(head, irisMat, [side * 0.12, 0.035, 0.311], [0.018, 0.022, 0.009]);
+    sphere(head, faceMat, [side * 0.12, 0.105, 0.286], [0.047, 0.012, 0.012]);
+    sphere(head, skin, [side * 0.30, -0.04, 0.005], [0.055, 0.10, 0.045]);
   }
-  segment(head, skin, [0, 0.00, 0.30], [0, -0.11, 0.33], 0.025, 0.018);
+  sphere(head, skin, [0, -0.055, 0.305], [0.035, 0.055, 0.04]);
   const mouth = new THREE.Mesh(new THREE.TorusGeometry(0.065, 0.009, 8, 20, Math.PI), faceMat);
   mouth.position.set(0, -0.16, 0.296); mouth.rotation.z = Math.PI; head.add(mouth);
 
   // Generic clothing meshes use only product type and color; no marks or textures.
   if (topGarment) {
-    const cloth = material(colorFor(topGarment.color), 0.8);
-    sphere(body, cloth, [0, 1.83, 0.005], [shoulders * 1.08, 0.64, 0.315]);
-    const longSleeve = ['Hoodies', 'Chaquetas'].includes(topGarment.category);
+    const cloth = material(colorFor(topGarment.color, topGarment.name), 0.8);
+    const topCategory = normalizedText(topGarment.category);
+    const topName = normalizedText(topGarment.name);
+    const sleeveless = ['tops', 'bras', 'tops de bikini', 'top de bikini'].includes(topCategory);
+    const longSleeve = ['hoodies', 'chaquetas', 'sacos', 'buzos', 'sueteres', 'cardigans', 'camisas', 'blusas', 'ruanas', 'kimonos'].includes(topCategory);
+    const cropTop = topName.includes('crop');
+    const bikiniTop = topCategory.includes('bikini');
+    const hemHeight = bikiniTop ? 1.77 : cropTop ? 1.52 : 1.18;
+    const garmentStations = torsoStations.filter(([y]) => y >= hemHeight);
+    // A small clearance keeps fabric above the skin without creating a floating shell.
+    loft(body, cloth, garmentStations.map(([y, rx, rz]) => [y, rx + 0.014, rz + 0.018]));
     for (const side of [-1, 1]) {
-      segment(body, cloth, [side * shoulders * 0.83, 2.15, 0], [side * 0.66, 1.69, 0.015], 0.155, 0.112);
-      if (longSleeve) segment(body, cloth, [side * 0.66, 1.69, 0.015], [side * 0.72, 1.16, 0.02], 0.112, 0.082);
+      if (sleeveless) {
+        segment(body, cloth, [side * shoulders * 0.55, 2.13, 0.05], [side * shoulders * 0.68, 1.93, 0.09], 0.025, 0.025);
+      } else {
+        const sleeveEnd = longSleeve ? 1.69 : 1.86;
+        // Start the sleeve inside the shoulder shell and cap the joint; this closes the
+        // skin-colored pinholes that appeared between the torso and sleeve meshes.
+        segment(body, cloth, [side * (shoulders - 0.03), 2.16, 0], [side * 0.66, sleeveEnd, 0.015], 0.15, longSleeve ? 0.11 : 0.12, 'end');
+        if (longSleeve) segment(body, cloth, [side * 0.66, 1.69, 0.015], [side * 0.72, 1.16, 0.02], 0.11, 0.075, 'end');
+      }
     }
-    if (topGarment.category === 'Hoodies') {
+    if (['hoodies', 'buzos'].includes(topCategory)) {
       sphere(body, cloth, [0, 2.28, -0.20], [0.27, 0.26, 0.18]);
       for (const side of [-1, 1]) segment(body, material('#e8e5dc', 0.65), [side * 0.045, 2.13, 0.30], [side * 0.045, 1.82, 0.31], 0.008, 0.008);
     }
-    if (topGarment.category === 'Chaquetas') segment(body, material('#dad8cf', 0.45), [0, 2.35, 0.31], [0, 1.30, 0.30], 0.012, 0.012);
-    if (['Camisetas', 'Tops', 'Camisas'].includes(topGarment.category)) {
-      const collar = new THREE.Mesh(new THREE.TorusGeometry(0.105, 0.018, 10, 28), material('#ede8dd', 0.65));
-      collar.position.set(0, 2.39, 0.25); collar.rotation.x = Math.PI / 2; body.add(collar);
+    if (['chaquetas', 'sacos', 'cardigans'].includes(topCategory)) segment(body, material('#dad8cf', 0.45), [0, 2.35, 0.31], [0, 1.30, 0.30], 0.012, 0.012);
+    if (topCategory === 'camisas' || topCategory === 'blusas') {
+      const stitch = material(colorFor(topGarment.color, topGarment.name), 0.76);
+      for (const y of [1.56, 1.72, 1.88, 2.04]) sphere(body, stitch, [0, y, 0.306], [0.018, 0.018, 0.012]);
+    }
+    if (['camisetas', 'tops', 'camisas'].includes(topCategory)) {
+      const collar = new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.018, 10, 28), cloth);
+      collar.position.set(0, 2.29, 0.24); collar.rotation.x = Math.PI / 2; body.add(collar);
+    }
+  }
+  if (onePieceGarment) {
+    const cloth = material(colorFor(onePieceGarment.color, onePieceGarment.name), 0.78);
+    const category = normalizedText(onePieceGarment.category);
+    if (category.includes('bano') || category.includes('one piece')) {
+      loft(body, cloth, [[0.94, hips * 0.70, 0.27], [1.02, hips * 0.85, 0.30], [1.24, hips * 0.91, 0.32], [1.46, waist * 0.97, 0.30], [1.70, shoulders * 0.77, 0.34], [1.98, shoulders * 0.80, 0.33], [2.12, shoulders * 0.70, 0.30]]);
+      for (const side of [-1, 1]) segment(body, cloth, [side * 0.26, 2.14, 0.04], [side * 0.20, 1.86, 0.10], 0.035, 0.035);
+    } else if (category === 'body' || category === 'bodies') {
+      loft(body, cloth, [[0.94, hips * 0.72, 0.26], [1.02, hips * 0.88, 0.285], [1.18, hips * 0.94, 0.295], [1.34, hips, 0.285], [1.48, waist + 0.012, 0.298], [1.72, shoulders * 0.82 + 0.012, 0.338], [1.99, shoulders * 0.82 + 0.012, 0.328], [2.12, shoulders * 0.70 + 0.012, 0.308]]);
+      for (const side of [-1, 1]) segment(body, cloth, [side * 0.26, 2.14, 0.04], [side * 0.20, 1.90, 0.10], 0.035, 0.035);
+    } else {
+      const dressStations = [
+        [0.18, hips * 1.12, 0.285], [0.52, hips * 1.10, 0.29], [0.88, hips * 1.05, 0.28],
+        [1.18, hips + 0.012, 0.285], ...torsoStations.filter(([y]) => y >= 1.34).map(([y, rx, rz]) => [y, rx + 0.014, rz + 0.018]),
+      ];
+      loft(body, cloth, dressStations);
+      for (const side of [-1, 1]) segment(body, cloth, [side * (shoulders - 0.03), 2.16, 0], [side * 0.66, 1.86, 0.015], 0.145, 0.105, 'end');
     }
   }
   if (bottomGarment) {
-    const cloth = material(colorFor(bottomGarment.color), 0.82);
-    if (bottomGarment.category === 'Faldas') {
-      mesh(new THREE.CylinderGeometry(0.28, 0.49, 0.64, 40, 1, false), cloth, body, [0, 1.00, 0]);
+    const cloth = material(colorFor(bottomGarment.color, bottomGarment.name), 0.82);
+    const bottomCategory = normalizedText(bottomGarment.category);
+    if (['faldas', 'pareos'].includes(bottomCategory)) {
+      mesh(new THREE.CylinderGeometry(0.31, 0.48, 0.68, 48, 2, false), cloth, body, [0, 1.00, 0]);
+      const waistband = mesh(new THREE.TorusGeometry(hips * 0.92, 0.025, 8, 40), cloth, body, [0, 1.34, 0]);
+      waistband.rotation.x = Math.PI / 2;
     } else {
-      const shortLength = bottomGarment.category === 'Shorts';
+      const shortLength = ['shorts', 'bermudas', 'bottom de bikini', 'bottoms de bikini'].includes(bottomCategory);
+      const bikiniBottom = bottomCategory.includes('bikini');
+      // Keep the shared hip/crotch panel close to the body while bridging the leg tubes.
+      loft(body, cloth, [
+        [0.97, hips * 0.77, 0.245],
+        [1.03, hips * 0.88, 0.265],
+        [1.12, hips * 0.92, 0.27],
+        [1.19, hips * 0.88, 0.25],
+      ]);
+      const waistband = mesh(new THREE.TorusGeometry(hips * 0.88, 0.012, 8, 48), cloth, body, [0, 1.18, 0]);
+      waistband.rotation.x = Math.PI / 2;
       for (const side of [-1, 1]) {
-        segment(body, cloth, [side * legSpread, 1.10, 0], [side * legSpread * 1.16, shortLength ? 0.59 : 0.60, 0], 0.172, 0.128);
-        if (!shortLength) segment(body, cloth, [side * legSpread * 1.16, 0.60, 0], [side * legSpread * 1.2, 0.14, 0], 0.128, 0.087);
+        const legEnd = shortLength ? (bikiniBottom ? 0.92 : 0.59) : 0.60;
+        segment(body, cloth, [side * legSpread, 1.12, 0], [side * legSpread * 1.16, legEnd, 0], 0.16, shortLength ? 0.14 : 0.125);
+        if (!shortLength) segment(body, cloth, [side * legSpread * 1.16, 0.60, 0], [side * legSpread * 1.2, 0.14, 0], 0.125, 0.085);
       }
     }
   }
   pivot.position.y = 0;
+  // Keep very tall and short avatar proportions inside the preview frame.
+  const avatarCenter = 1.58 * heightScale;
+  controls.target.y = avatarCenter;
+  camera.position.set(0, avatarCenter + 0.15, Math.max(6.2, heightScale * 5.45));
+  controls.update();
   document.getElementById('avatarPreviewTitle').textContent = garments.length ? 'Tu conjunto' : 'Avatar 3D';
 }
 
@@ -201,7 +336,7 @@ const getStored = (key, fallback) => { try { return JSON.parse(localStorage.getI
 function fromStorage() {
   const products = window.CLOTHES_PRODUCTS || [];
   let ids = getStored('clothes.worn', []); if (!Array.isArray(ids)) ids = ids ? [ids] : [];
-  const garments = ids.map(id => products.find(item => item.id === id)).filter(Boolean).map(item => ({ category: item.category, color: item.color }));
+  const garments = ids.map(id => products.find(item => item.id === id)).filter(Boolean).map(item => ({ category: item.category, color: item.color, name: item.name }));
   return { profile: getStored('clothes.profile', { gender: 'neutro', height: 165, weight: 60, hair: 'short', skin: '#dba77f' }), garments };
 }
 window.addEventListener('clothes:avatar-updated', event => buildAvatar(event.detail));

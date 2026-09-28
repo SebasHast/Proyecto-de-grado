@@ -14,9 +14,10 @@
 
     <main class="container py-5" style="max-width:560px">
         <h1 class="fw-bold mb-3 text-center">Verificar cuenta</h1>
-        <p class="text-secondary text-center">Hemos enviado un código a tu correo. Escríbelo para activar tu cuenta.</p>
+        <p class="text-secondary text-center">La verificación está temporalmente desactivada mientras migramos las cuentas a un servicio seguro.</p>
 
         <form id="verifyForm" class="mt-4" novalidate>
+            <div class="alert alert-warning" role="status">No ingreses tu correo ni un código aquí por ahora. Puedes explorar el catálogo y comprar directamente en las tiendas oficiales.</div>
             <div class="mb-3">
                 <label class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" required>
@@ -32,6 +33,10 @@
         </form>
     </main>
 
+    <script>
+        // Prevent requests to the legacy public Retool endpoint until a private backend exists.
+        document.querySelectorAll('#verifyForm input, #verifyForm button').forEach(control => { control.disabled = true; });
+    </script>
     <script src="../../bootstrap/js/bootstrap.bundle.min.js"></script>
     <script>
         fetch('/header.html')

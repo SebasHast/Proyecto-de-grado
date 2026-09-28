@@ -14,8 +14,8 @@
   <section class="avatar-workspace">
     <form id="avatarForm" class="avatar-profile"><p class="eyebrow">TU PERFIL</p><h2>Personaliza tu avatar</h2>
       <label>Presentación<select id="avatarGender" name="gender"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="neutro">Neutro</option></select></label>
-      <label>Estatura (cm)<input id="avatarHeight" name="height" type="number" min="120" max="220" step="1" required placeholder="165"></label>
-      <label>Peso (kg)<input id="avatarWeight" name="weight" type="number" min="30" max="250" step="0.1" required placeholder="60"></label>
+      <label class="avatar-range-label" for="avatarHeight"><span>Estatura <output id="avatarHeightValue" for="avatarHeight" aria-live="polite">165 cm</output></span><input id="avatarHeight" name="height" type="range" min="120" max="220" step="1" value="165" aria-valuetext="165 centímetros"></label>
+      <label class="avatar-range-label" for="avatarWeight"><span>Peso <output id="avatarWeightValue" for="avatarWeight" aria-live="polite">60 kg</output></span><input id="avatarWeight" name="weight" type="range" min="30" max="250" step="1" value="60" aria-valuetext="60 kilogramos"></label>
       <label>Cabello<select id="avatarHair" name="hair"><option value="short">Corto</option><option value="long">Largo</option><option value="curly">Rizado</option></select></label>
       <label>Tono de piel<select id="avatarSkin" name="skin"><option value="#f2cfac">Claro</option><option value="#dba77f">Medio claro</option><option value="#b77b58">Medio</option><option value="#80543d">Oscuro</option></select></label>
       <button class="btn btn-dark" type="submit">Guardar cambios</button><button class="avatar-reset" id="avatarReset" type="button">Restablecer avatar</button>
