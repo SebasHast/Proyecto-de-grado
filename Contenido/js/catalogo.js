@@ -1,3 +1,5 @@
+(async () => {
+await window.CLOTHES_PRODUCTS_READY;
 const demoProducts = window.CLOTHES_PRODUCTS;
 const catalogRoot = document.documentElement;
 const catalogGender = catalogRoot.dataset.catalogGender;
@@ -88,7 +90,7 @@ function queueTryOn(id) {
   const queue = readList('clothes.tryOnQueue');
   if (!queue.includes(id)) queue.push(id);
   localStorage.setItem('clothes.tryOnQueue', JSON.stringify(queue));
-  if (!readList('clothes.worn').length) localStorage.setItem('clothes.worn', JSON.stringify([id]));
+  if (!readList('clothes.worn').length) { localStorage.setItem('clothes.worn', JSON.stringify([id])); if (window.NOVUM_TRACK) window.NOVUM_TRACK('try-on', id); }
   announce('Prenda guardada. Abre Mi avatar para verla en el probador.');
 }
 function announce(message) {
@@ -112,3 +114,4 @@ fetch('../header.html').then(response => { if (!response.ok) throw new Error('No
   syncIcon();
   if (toggle) toggle.addEventListener('click', () => { const next = catalogRoot.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'; catalogRoot.setAttribute('data-theme', next); localStorage.setItem('theme', next); syncIcon(); });
 }).catch(error => console.error(error));
+})();

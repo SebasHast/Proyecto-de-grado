@@ -1,3 +1,5 @@
+(async () => {
+await window.CLOTHES_PRODUCTS_READY;
 const searchProducts = window.CLOTHES_PRODUCTS || [];
 const stylePages = [
   { name: 'Streetwear', slug: 'streetwear', image: 'https://www.sevenseven.com/dw/image/v2/BHFM_PRD/on/demandware.static/-/Sites-storefront_catalog_sevenseven/default/dw21365372/images/hi-res/SevenSeven/Chaqueta-para-mujer-28081038-78577_1.jpg?sw=600&sh=720' },
@@ -25,7 +27,8 @@ const demoBrands = [
   { name: 'Baobab', logo: '', note: 'Marca colombiana de prendas resort y tejidos de diseño.', url: 'https://baobab.com.co/' },
   { name: 'Suki Cohen', logo: '', note: 'Marca colombiana de ropa interior, bodies y prendas femeninas.', url: 'https://sukicohen.com/' },
   { name: 'Maygel Coronel', logo: '', note: 'Diseño colombiano de vestidos, swimwear y prendas resort.', url: 'https://co.maygelcoronel.com/' },
-  { name: 'Lobo Rosa', logo: '', note: 'Marca colombiana de ropa femenina y vestidos estampados.', url: 'https://loborosa.com/' }
+  { name: 'Lobo Rosa', logo: '', note: 'Marca colombiana de ropa femenina y vestidos estampados.', url: 'https://loborosa.com/' },
+  { name: 'Low Trip', logo: '', note: 'Streetwear colombiano diseñado en Bogotá; el catálogo conserva la clasificación de audiencia indicada por la marca.', url: 'https://lowtripstudios.com/' }
 ];
 const esc = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 const audienceLabel = value => ({ mujer: 'Mujer', hombre: 'Hombre', unisex: 'Unisex' })[value] || 'Unisex';
@@ -68,3 +71,4 @@ if (searchInput && resultsHost) {
   searchInput.addEventListener('input', renderSearch);
   renderSearch();
 }
+})();

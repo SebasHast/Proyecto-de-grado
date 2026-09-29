@@ -42,4 +42,35 @@ window.CLOTHES_PRODUCTS = [
   { id: 'maygel-montt-dress-steel-blue', name: 'Montt Dress Azul Acero', brand: 'Maygel Coronel', audience: 'mujer', category: 'Vestidos', styles: ['Formal', 'Vintage'], price: 1000000, color: 'Azul acero', sizes: ['PETITE', 'ONE SIZE', 'EXTENDED'], image: 'https://co.maygelcoronel.com/cdn/shop/files/VT-070MONTT.png?v=1714414196', logo: '', officialUrl: 'https://co.maygelcoronel.com/products/montt-dress', description: 'Vestido Montt azul acero con detalle de nudo en el hombro y recogido en cintura y cadera.' },
   { id: 'lobo-rosa-ciara-dress-blue', name: 'Ciara Dress', brand: 'Lobo Rosa', audience: 'mujer', category: 'Vestidos', styles: ['Vintage', 'Formal'], price: 598000, color: 'Azul', sizes: ['XS', 'S', 'M', 'L', 'XL'], image: 'https://loborosa.com/wp-content/uploads/2024/01/1251084_Ciara-Dress_1-600x750.jpg', logo: '', officialUrl: 'https://loborosa.com/product/ciara-dress/', description: 'Vestido largo de manga corta con bolero largo en el ruedo. Consulta estampados y tallas disponibles en la tienda.' },
   { id: 'suki-body-ruby-black', name: 'Body Ruby Negro', brand: 'Suki Cohen', audience: 'mujer', category: 'Bodies', styles: ['Formal', 'Streetwear'], price: 480000, color: 'Negro', sizes: ['XS', 'S', 'M', 'L', 'XL'], image: 'https://sukicohen.com/wp-content/uploads/2026/07/body_ruby_negro_1.jpg', logo: '', officialUrl: 'https://sukicohen.com/producto/body-ink-copy/?lang=es', description: 'Body Ruby negro de la colección femenina de Suki Cohen.' }
+  ,{ id: 'lowtrip-baby-tee-basic', name: 'Baby Tee Basic blanca', brand: 'Low Trip', audience: 'mujer', category: 'Camisetas', styles: ['Streetwear', 'Casual', 'Y2K'], price: 70000, color: 'Blanco con estampado negro', sizes: ['XS', 'S', 'M'], image: '../Imagenes/placeholder-prenda.svg', logo: '', officialUrl: 'https://lowtripstudios.com/products/baby-tee-basic?variant=52298610737434', description: 'Baby tee slim fit de algodón, con gráfica tipográfica frontal. Hecha en Bogotá. La marca la clasifica como exclusiva para mujer.' }
+  ,{ id: 'lowtrip-knitted-double-zip-black', name: 'Knitted Double Zip negro', brand: 'Low Trip', audience: 'unisex', category: 'Suéteres', styles: ['Streetwear', 'Casual'], price: 250000, color: 'Negro', sizes: ['S', 'M', 'L', 'XL'], image: '../Imagenes/placeholder-prenda.svg', logo: '', officialUrl: 'https://lowtripstudios.com/products/knitted-double-zip?variant=52639500861722', description: 'Suéter tejido unisex con cierre doble. Consulta tallas y disponibilidad en la tienda oficial.' }
+  ,{ id: 'lowtrip-knitted-double-zip-blue', name: 'Knitted Double Zip azul', brand: 'Low Trip', audience: 'unisex', category: 'Suéteres', styles: ['Streetwear', 'Casual'], price: 250000, color: 'Azul', sizes: ['S', 'M', 'L', 'XL'], image: '../Imagenes/placeholder-prenda.svg', logo: '', officialUrl: 'https://lowtripstudios.com/products/knitted-double-zip-1?variant=52639504367898', description: 'Suéter tejido unisex azul con cierre doble. Consulta tallas y disponibilidad en la tienda oficial.' }
+  ,{ id: 'lowtrip-long-sleeve-black', name: 'Long Sleeve Basic negra', brand: 'Low Trip', audience: 'unisex', category: 'Camisetas', styles: ['Streetwear', 'Casual'], price: 175000, color: 'Negro', sizes: ['S', 'M', 'L'], image: '../Imagenes/placeholder-prenda.svg', logo: '', officialUrl: 'https://lowtripstudios.com/products/long-sleeve-basic?variant=52298586390810', description: 'Camiseta unisex negra de manga larga. Consulta tallas y disponibilidad en la tienda oficial.' }
+  ,{ id: 'lowtrip-long-sleeve-white-signature', name: 'Long Sleeve White Signature', brand: 'Low Trip', audience: 'unisex', category: 'Camisetas', styles: ['Streetwear', 'Casual', 'Minimalista'], price: 175000, color: 'Blanco con estampados negros', sizes: ['S', 'M', 'L'], image: '../Imagenes/placeholder-prenda.svg', logo: '', officialUrl: 'https://lowtripstudios.com/products/long-sleeve-basic-1?variant=52298600186138', description: 'Camiseta unisex blanca boxy/oversized con gráficos en mangas. Consulta tallas en la tienda oficial.' }
 ];
+
+// El catálogo estático sigue funcionando cuando Supabase aún no se configura.
+window.CLOTHES_PRODUCTS_READY = fetch('/api/catalog')
+  .then(response => response.ok ? response.json() : null)
+  .then(remoteProducts => {
+    if (Array.isArray(remoteProducts) && remoteProducts.length) {
+      const merged = new Map(window.CLOTHES_PRODUCTS.map(product => [product.id, product]));
+      remoteProducts.forEach(product => merged.set(product.id, { ...merged.get(product.id), ...product }));
+      window.CLOTHES_PRODUCTS.splice(0, window.CLOTHES_PRODUCTS.length, ...[...merged.values()].filter(product => product.active !== false));
+    }
+    return window.CLOTHES_PRODUCTS;
+  })
+  .catch(() => window.CLOTHES_PRODUCTS);
+
+const getVisitorId = () => {
+  let id = localStorage.getItem('novum.visitorId');
+  if (!id) { id = crypto.randomUUID(); localStorage.setItem('novum.visitorId', id); }
+  return id;
+};
+window.NOVUM_TRACK = (kind, productId = '') => fetch('/api/analytics', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ kind, productId, visitorId: getVisitorId() }), keepalive: true
+}).catch(() => {});
+const reportPresence = () => window.NOVUM_TRACK('heartbeat');
+reportPresence();
+window.setInterval(reportPresence, 60_000);

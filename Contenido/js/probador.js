@@ -1,4 +1,6 @@
 (() => {
+  window.CLOTHES_PRODUCTS_READY.then(() => initializeTryOn()).catch(() => initializeTryOn());
+  function initializeTryOn() {
   const products = window.CLOTHES_PRODUCTS || [];
   const form = document.getElementById('avatarForm');
   const list = document.getElementById('tryOnItems');
@@ -51,7 +53,7 @@
         if(onePiece) selected=[];
         if(top) selected=selected.filter(id=>!topCategories.includes(normalize(products.find(p=>p.id===id)?.category))&&!onePieceCategories.includes(normalize(products.find(p=>p.id===id)?.category)));
         if(bottom) selected=selected.filter(id=>!bottomCategories.includes(normalize(products.find(p=>p.id===id)?.category))&&!onePieceCategories.includes(normalize(products.find(p=>p.id===id)?.category)));
-        selected.push(item.id);
+        selected.push(item.id);if(window.NOVUM_TRACK)window.NOVUM_TRACK('try-on',item.id);
       }
       localStorage.setItem('clothes.worn',JSON.stringify(selected));renderCloset();
     }));
@@ -77,4 +79,5 @@
     const badge=document.querySelector('[data-cart-count]');if(badge){try{const cart=JSON.parse(localStorage.getItem('clothes.cart')||'[]');badge.textContent=cart.reduce((sum,item)=>sum+(Number(item.quantity)||0),0);badge.hidden=Number(badge.textContent)===0;}catch{badge.hidden=true;}}
   }).catch(console.error);
   renderCloset();
+  }
 })();

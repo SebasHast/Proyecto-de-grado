@@ -83,7 +83,7 @@ html[data-theme="dark"] .dropdown-item:focus {
 }
 
 
-/* CLOTHES — identidad editorial de la portada */
+/* Novum Label — identidad editorial de la portada */
 :root { color-scheme: light; --page: #f6f4ef; --surface: #fff; --ink: #191917; --muted: #77766f; --line: rgba(25,25,23,.14); --accent: #b9d17c; }
 html { scroll-behavior: smooth; scroll-padding-top: 90px; }
 html, body { min-width: 320px; overflow-x: hidden; }
