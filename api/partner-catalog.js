@@ -2,7 +2,6 @@ import { json } from './_supabase.js';
 
 const STORES = [
   { brand: 'Agybo', url: 'https://agybo.com', platform: 'shopify', audience: 'unisex' },
-  { brand: 'EiiNA', url: 'https://eiina-brand.com', platform: 'woocommerce', audience: 'mujer' },
   { brand: 'Zohet', url: 'https://zohet.com.co', platform: 'woocommerce', audience: 'mujer' },
   { brand: 'One Five', url: 'https://www.onefive.com.co', platform: 'shopify', audience: 'mujer' }
 ];
@@ -97,7 +96,7 @@ export default async function handler(req, res) {
   try {
     const rateResponse = await fetch('https://api.frankfurter.dev/v2/rate/EUR/COP');
     if (rateResponse.ok) euroCopRate = Number((await rateResponse.json()).rate) || null;
-  } catch { /* EiiNA products are omitted if no conversion rate is available. */ }
+  } catch { /* Euro-priced products are omitted if no conversion rate is available. */ }
   const catalogs = await Promise.all(STORES.map(async store => [store.brand, await fetchStore(store, euroCopRate)]));
   const result = Object.fromEntries(catalogs);
   if (!Object.values(result).some(products => products.length)) return json(res, 502, { error: 'No se pudieron consultar los catálogos de las marcas.' });

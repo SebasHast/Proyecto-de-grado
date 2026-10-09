@@ -16,10 +16,10 @@ const demoBrands = [
   { name: 'True', logo: '../Imagenes/Marcas/True/true_logo.png', note: 'Marca colombiana incluida en el catálogo.', url: '' },
   { name: 'Undergold', logo: '../Imagenes/Marcas/Undergold/undergold_logo.png', note: 'Marca colombiana incluida en el catálogo.', url: '' },
   { name: 'Weedgreen', logo: '../Imagenes/Marcas/Weedgreen/weedgreen_logo.png', note: 'Marca colombiana incluida en el catálogo.', url: '' },
-  { name: 'Buds', logo: '', note: 'Marca colombiana de ropa urbana; consulta su catálogo oficial antes de comprar.', url: 'https://www.buds.com.co/' },
-  { name: 'ZIPRE', logo: '', note: 'Marca de moda sostenible con base en Bogotá y prendas hechas en Colombia.', url: 'https://zipre.co/' },
-  { name: 'Kame.col', logo: '', note: 'Marca de ropa urbana de Bogotá con confección colombiana.', url: 'https://www.kamecol.com/' },
-  { name: 'SINNERS', logo: '', note: 'Streetwear diseñado y fabricado en Medellín; consulta tallas y disponibilidad en su tienda oficial.', url: 'https://thesinnersgallery.com/' },
+  { name: 'Buds', logo: '../Imagenes/Marcas/Buds/BUDS_LOGO.webp', note: 'Marca colombiana de ropa urbana; consulta su catálogo oficial antes de comprar.', url: 'https://www.buds.com.co/' },
+  { name: 'ZIPRE', logo: '../Imagenes/Marcas/Zipre/Zipre-logo.webp', note: 'Marca de moda sostenible con base en Bogotá y prendas hechas en Colombia.', url: 'https://zipre.co/' },
+  { name: 'Kame.col', logo: '../Imagenes/Marcas/Kame-col/Kame-col-logo.png', note: 'Marca de ropa urbana de Bogotá con confección colombiana.', url: 'https://www.kamecol.com/' },
+  { name: 'SINNERS', logo: '../Imagenes/Marcas/Sinners/sinners_logo_negro.avif', note: 'Streetwear diseñado y fabricado en Medellín; consulta tallas y disponibilidad en su tienda oficial.', url: 'https://thesinnersgallery.com/' },
   { name: 'Mattelsa', logo: '', note: 'Ropa urbana colombiana para hombre y mujer.', url: 'https://www.mattelsa.net/' },
   { name: 'Homen', logo: '', note: 'Marca colombiana de prendas premium, algodón de alto gramaje y siluetas urbanas.', url: 'https://www.homen.com.co/' },
   { name: 'A New Cross', logo: '', note: 'Marca de diseño y confección artesanal con sede en Bogotá.', url: 'https://anewcross.com/' },
@@ -30,7 +30,6 @@ const demoBrands = [
   { name: 'Lobo Rosa', logo: '', note: 'Marca colombiana de ropa femenina y vestidos estampados.', url: 'https://loborosa.com/' },
   { name: 'Low Trip', logo: '', note: 'Streetwear colombiano diseñado en Bogotá; el catálogo conserva la clasificación de audiencia indicada por la marca.', url: 'https://lowtripstudios.com/' },
   { name: 'Agybo', logo: '', note: 'Marca colombiana de prendas urbanas y tejidos de punto; los productos sin género explícito se clasifican como unisex.', url: 'https://agybo.com/' },
-  { name: 'EiiNA', logo: '', note: 'Marca de moda ética colombiana co-creada con artesanos y técnicas ancestrales.', url: 'https://eiina-brand.com/' },
   { name: 'Zohet', logo: '', note: 'Marca colombiana de ropa femenina con tienda y puntos físicos en Bogotá.', url: 'https://zohet.com.co/' },
   { name: 'One Five', logo: '', note: 'Marca colombiana de vestuario femenino con sede en Medellín.', url: 'https://www.onefive.com.co/' }
 ];

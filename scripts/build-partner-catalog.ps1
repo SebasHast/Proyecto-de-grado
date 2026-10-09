@@ -106,7 +106,6 @@ function Convert-Woo($product, $brand, $rate, $fallback) {
 $rate = [double](Get-Json 'https://api.frankfurter.dev/v2/rate/EUR/COP').rate
 $shops = @(
   @{ brand = 'Agybo'; url = 'https://agybo.com'; platform = 'shopify'; audience = 'unisex' },
-  @{ brand = 'EiiNA'; url = 'https://eiina-brand.com'; platform = 'woo'; audience = 'mujer' },
   @{ brand = 'Zohet'; url = 'https://zohet.com.co'; platform = 'woo'; audience = 'mujer' },
   @{ brand = 'One Five'; url = 'https://www.onefive.com.co'; platform = 'shopify'; audience = 'mujer' }
 )
